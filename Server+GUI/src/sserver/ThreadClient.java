@@ -36,7 +36,7 @@ public class ThreadClient implements Runnable {
     private BufferedReader br = null;
     private ObjectOutputStream ous = null;
     private ObjectInputStream ois = null;
-    private ArrayList <String> list;
+    private ArrayList <String> list = new ArrayList<String>();
     private Person p;
     
     public ThreadClient(Socket sockClient, ArrayList<ThreadClient> t, ArrayList<Socket> s){
@@ -94,13 +94,15 @@ public class ThreadClient implements Runnable {
     }
     public void list() throws IOException, ClassNotFoundException{
         
-        System.out.println("masuk list");
+        //System.out.println("masuk list");
         ThreadClient tc = null;
-        p = (Person) ois.readObject();
+        
         for(int i=0; i<this.getAlThread().size(); i++){
             tc  = this.getAlThread().get(i);
-             p.setList(tc.getSockClient().getRemoteSocketAddress().toString());
+            //System.out.println(tc.getSockClient().getRemoteSocketAddress().toString());
+            list.add(tc.getSockClient().getRemoteSocketAddress().toString());
         }
+        p.setDaftar(list);
         ous.writeObject(p);
         ous.flush();
         ous.reset();
