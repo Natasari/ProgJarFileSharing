@@ -10,6 +10,9 @@ import Person.Person;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
@@ -36,15 +39,21 @@ public class ThreadClient implements Runnable {
     private BufferedReader br = null;
     private ObjectOutputStream ous = null;
     private ObjectInputStream ois = null;
+    private FileOutputStream fos = null;
+    private FileInputStream fis = null;
     private ArrayList <String> list = new ArrayList<String>();
     private Person p;
+    private String user;
+    int FILE_SIZE = 0x396f174;
+    String FILE_TO_RECEIVED;
+    int current =0;
     
-    public ThreadClient(Socket sockClient, ArrayList<ThreadClient> t, ArrayList<Socket> s){
+    public ThreadClient(Socket sockClient, ArrayList<ThreadClient> t, ArrayList<Socket> s, String user){
         this.sockClient=sockClient;
         this.alThread=t;
         this.sock=s;
         this.sa = this.sockClient.getRemoteSocketAddress();
-        
+        this.user=user;
     }
     
     @Override
@@ -67,12 +76,20 @@ public class ThreadClient implements Runnable {
                 ous.writeUTF(msg);
                 ous.flush();
                 ous.reset();
+                p.setNama(this.getUser());
+                ous.writeObject(p);
+                ous.flush();
+                ous.reset();
             }
             else if(msg.equals("QUIT")){
                 break;
             }
             else if(msg.equals("LIST")){
                this.list();  
+            }
+            else if(msg.equals("MESS")){
+                
+                this.create(p.getMybytearray());
             }
         }
             
@@ -96,15 +113,15 @@ public class ThreadClient implements Runnable {
         
         //System.out.println("masuk list");
         ThreadClient tc = null;
-        
         for(int i=0; i<this.getAlThread().size(); i++){
             tc  = this.getAlThread().get(i);
             //System.out.println(tc.getSockClient().getRemoteSocketAddress().toString());
-            list.add(tc.getSockClient().getRemoteSocketAddress().toString());
+            list.add(tc.getUser());
         }
         p.setDaftar(list);
         ous.writeObject(p);
         ous.flush();
+        //System.out.println("bawah");
         ous.reset();
     }
     
@@ -184,6 +201,36 @@ public class ThreadClient implements Runnable {
         ous.writeObject(p);
         ous.flush();
         ous.reset();
+    }
+
+    /**
+     * @return the user
+     */
+    public String getUser() {
+        return user;
+    }
+
+    /**
+     * @param user the user to set
+     */
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    private void create(byte[] mybytearray) throws FileNotFoundException, IOException, ClassNotFoundException {
+        
+        p = (Person) ois.readObject();
+        System.out.println(p.getMybytearray().length);
+        byte [] mybyte = new byte[p.getMybytearray().length + 2];
+        fos = new FileOutputStream("e:/source-downloaded.txt");
+        bos = new BufferedOutputStream(fos);
+        mybyte = p.getMybytearray();
+        
+    bos.write(p.getMybytearray(),0, p.getMybytearray().length);
+        bos.flush();
+        bos.close();
+        fos.close();
+        //System.out.println("File " + FILE_TO_RECEIVED + " downloaded (" + current + " bytes read)");
     }
 
   

@@ -31,12 +31,14 @@ public class Sserver {
         
         ServerSocket ssServer = new ServerSocket(6060);
         System.out.println("Listening...");
-               
+        int ke=0;
+        String nama = "";
         while(true){
+            nama = "User " + ++ke;
             Socket sockClient = ssServer.accept();
             System.out.println(sockClient.getInetAddress().toString() + " masuk");
             sock.add(sockClient);
-            ThreadClient tc = new ThreadClient(sockClient,alThread, sock);
+            ThreadClient tc = new ThreadClient(sockClient,alThread, sock, nama);
             alThread.add(tc);
             Thread t = new Thread(tc);
             t.start();
