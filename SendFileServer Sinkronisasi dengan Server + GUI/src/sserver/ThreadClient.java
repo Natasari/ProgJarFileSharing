@@ -10,6 +10,7 @@ import Person.Person;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -43,11 +44,15 @@ public class ThreadClient implements Runnable {
     private FileOutputStream fos = null;
     private FileInputStream fis = null;
     private ArrayList <String> list = new ArrayList<String>();
+    private ArrayList <String> listFile = new ArrayList<String>();
+    private ArrayList <String> listDownload = new ArrayList<String>();
+    private ArrayList <byte[]> listByte = new ArrayList<byte[]>();
     private Person p;
     private String user;
     int FILE_SIZE = 0x396f174;
     String FILE_TO_RECEIVED;
     int current =0;
+    private File file = null;
     
     public ThreadClient(Socket sockClient, ArrayList<ThreadClient> t, ArrayList<Socket> s){
         this.sockClient=sockClient;
@@ -78,6 +83,14 @@ public class ThreadClient implements Runnable {
                 ous.flush();
                 ous.reset();
                 this.setUsername(ois.readUTF());
+                file = new File("d:/" + this.getUsername());
+                    if (!file.exists()) {
+                        if (file.mkdir()) {
+                                System.out.println("Directory is created!");
+                        } else {
+                                System.out.println("Failed to create directory!");
+                        }
+                    }
                 System.out.println("Username " + this.getUsername());
             }
             else if(msg.equals("QUIT")){
@@ -86,9 +99,14 @@ public class ThreadClient implements Runnable {
             else if(msg.equals("LIST")){
                this.list();  
             }
-            else if(msg.equals("MESS")){
-                
+            else if(msg.equals("MESS")){                
                 this.create(p.getMybytearray());
+            }
+            else if(msg.equals("CHEK")){
+                this.listFile();
+            }
+            else if(msg.equals("DOWN")){
+                this.down();
             }
         }
             
@@ -222,7 +240,7 @@ public class ThreadClient implements Runnable {
         bos = new BufferedOutputStream(fos);
         mybyte = p.getMybytearray();
         
-    bos.write(p.getMybytearray(),0, p.getMybytearray().length);
+        bos.write(p.getMybytearray(),0, p.getMybytearray().length);
         bos.flush();
         bos.close();
         fos.close();
@@ -241,6 +259,83 @@ public class ThreadClient implements Runnable {
      */
     public void setUsername(String Username) {
         this.Username = Username;
+    }
+
+    /**
+     * @return the file
+     */
+    public File getFile() {
+        return file;
+    }
+
+    /**
+     * @param file the file to set
+     */
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    private void listFile() throws IOException {
+        
+        File folder = new File("d:/" + this.getUsername());
+        File[] listOfFiles = folder.listFiles();
+        ThreadClient tc = null;
+        for (int i = 0; i < listOfFiles.length; i++) {
+          if (listOfFiles[i].isFile()) {
+            System.out.println("File " + listOfFiles[i].getName());
+            listFile.add(listOfFiles[i].getName());
+          } //else if (listOfFiles[i].isDirectory()) {
+            //System.out.println("Directory " + listOfFiles[i].getName());
+          //}
+        }
+        p.setDaftarFile(listFile);
+        ous.writeObject(p);
+        ous.flush();
+        ous.reset();
+        list.clear();
+    }
+
+    /**
+     * @return the listFile
+     */
+    public ArrayList <String> getListFile() {
+        return listFile;
+    }
+
+    /**
+     * @param listFile the listFile to set
+     */
+    public void setListFile(ArrayList <String> listFile) {
+        this.listFile = listFile;
+    }
+
+    private void down() throws IOException {
+        try { 
+            p = (Person) ois.readObject();
+            
+            ThreadClient tc = null;
+            for(int i=0; i<this.getAlThread().size(); i++){
+                tc  = this.getAlThread().get(i);
+                list.add(tc.getUsername());
+            }
+            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * @return the listDownload
+     */
+    public ArrayList <String> getListDownload() {
+        return listDownload;
+    }
+
+    /**
+     * @param listDownload the listDownload to set
+     */
+    public void setListDownload(ArrayList <String> listDownload) {
+        this.listDownload = listDownload;
     }
 
   
