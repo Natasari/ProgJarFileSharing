@@ -7,6 +7,7 @@
 package sserver;
 
 import Person.Person;
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -46,13 +47,15 @@ public class ThreadClient implements Runnable {
     private ArrayList <String> list = new ArrayList<String>();
     private ArrayList <String> listFile = new ArrayList<String>();
     private ArrayList <String> listDownload = new ArrayList<String>();
-    private ArrayList <byte[]> listByte = new ArrayList<byte[]>();
+    private ArrayList <Byte> listByte = new ArrayList<Byte>();
     private Person p;
     private String user;
     int FILE_SIZE = 0x396f174;
     String FILE_TO_RECEIVED;
     int current =0;
     private File file = null;
+    private String FileToSend="d:/";
+    private BufferedInputStream bi = null;
     
     public ThreadClient(Socket sockClient, ArrayList<ThreadClient> t, ArrayList<Socket> s){
         this.sockClient=sockClient;
@@ -312,11 +315,15 @@ public class ThreadClient implements Runnable {
     private void down() throws IOException {
         try { 
             p = (Person) ois.readObject();
-            
-            ThreadClient tc = null;
-            for(int i=0; i<this.getAlThread().size(); i++){
-                tc  = this.getAlThread().get(i);
-                list.add(tc.getUsername());
+            listDownload = p.getFileYangDiunduh();
+            for(int i=0; i<listDownload.size(); i++){
+                File myFile = new File (FileToSend + this.getUsername()+ "/" + listDownload.get(i));
+                byte[] mybyte  = new byte [(int)myFile.length()];
+                //fis = new FileInputStream(myFile);
+                //bi = new BufferedInputStream(fis);
+                //bi.read(mybyte,0,mybyte.length);
+                System.out.println(FileToSend + this.getUsername()+ "/" + listDownload.get(i));
+                System.out.println(myFile.length());
             }
             
         } catch (ClassNotFoundException ex) {
@@ -336,6 +343,20 @@ public class ThreadClient implements Runnable {
      */
     public void setListDownload(ArrayList <String> listDownload) {
         this.listDownload = listDownload;
+    }
+
+    /**
+     * @return the listByte
+     */
+    public ArrayList <Byte> getListByte() {
+        return listByte;
+    }
+
+    /**
+     * @param listByte the listByte to set
+     */
+    public void setListByte(ArrayList <Byte> listByte) {
+        this.listByte = listByte;
     }
 
   
