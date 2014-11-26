@@ -47,6 +47,7 @@ public class ThreadClient implements Runnable {
     private ArrayList <String> list = new ArrayList<String>();
     private ArrayList <String> listFile = new ArrayList<String>();
     private ArrayList <String> listDownload = new ArrayList<String>();
+    private ArrayList <String> Penerima = new ArrayList<String>();
     private ArrayList <Byte> listByte = new ArrayList<Byte>();
     private Person p;
     private String user;
@@ -237,16 +238,21 @@ public class ThreadClient implements Runnable {
     private void create(byte[] mybytearray) throws FileNotFoundException, IOException, ClassNotFoundException {
         
         p = (Person) ois.readObject();
-        System.out.println(p.getMybytearray().length);
-        byte [] mybyte = new byte[p.getMybytearray().length + 2];
-        fos = new FileOutputStream("d:/" + p.getNamaFile());
-        bos = new BufferedOutputStream(fos);
-        mybyte = p.getMybytearray();
-        
-        bos.write(p.getMybytearray(),0, p.getMybytearray().length);
-        bos.flush();
-        bos.close();
-        fos.close();
+        Penerima = p.getPenerima();
+        for(int i=0; i<Penerima.size(); i++){
+            byte [] mybyte = new byte[p.getMybytearray().length + 2];
+            fos = new FileOutputStream("d:/" + Penerima.get(i) + "/"+ p.getNamaFile());
+            bos = new BufferedOutputStream(fos);
+            mybyte = p.getMybytearray();
+
+            bos.write(p.getMybytearray(),0, p.getMybytearray().length);
+            bos.flush();
+            bos.close();
+            fos.close();
+        }
+        /*System.out.println(p.getMybytearray().length);
+        System.out.println("penerima nya " + p.getPenerima().get(i));
+        */
         //System.out.println("File " + FILE_TO_RECEIVED + " downloaded (" + current + " bytes read)");
     }
 
@@ -359,6 +365,20 @@ public class ThreadClient implements Runnable {
      */
     public void setListByte(ArrayList <Byte> listByte) {
         this.listByte = listByte;
+    }
+
+    /**
+     * @return the Penerima
+     */
+    public ArrayList <String> getPenerima() {
+        return Penerima;
+    }
+
+    /**
+     * @param Penerima the Penerima to set
+     */
+    public void setPenerima(ArrayList <String> Penerima) {
+        this.Penerima = Penerima;
     }
 
   

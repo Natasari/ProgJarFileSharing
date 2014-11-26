@@ -43,6 +43,7 @@ public class CilentGUI extends javax.swing.JFrame {
     private Socket socket;
     Person p = new Person();
     public ArrayList <String> Daftar ;
+    public ArrayList <String> Penerima = new ArrayList<String>();
     public ArrayList <String> DaftarFile ;
     public ArrayList <String> DaftarDownload = new ArrayList<String>();
     FileOutputStream fos = null;
@@ -332,6 +333,7 @@ public class CilentGUI extends javax.swing.JFrame {
     private void UploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UploadActionPerformed
         
         try {
+            
             mybytearray = new byte[(int)file.length()];
             p.setNamaFile(NamaFile);
             fis = new FileInputStream(file);
@@ -341,7 +343,11 @@ public class CilentGUI extends javax.swing.JFrame {
                 bi.read(mybytearray, 0, mybytearray.length);
                 System.out.println(file.length());
                 p.setMybytearray(mybytearray);
-                //ous.writeObject(p);
+                p.setPenerima(Penerima);
+                /*for(int i=0; i<Penerima.size(); i++){
+                    System.out.println("penerima nya adalah" + Penerima.get(i));
+                }*/
+                
                 ous.writeUTF("MESS");
                 ous.flush();
                 ous.reset();
@@ -448,6 +454,8 @@ public class CilentGUI extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         int index = DropList.getSelectedIndex();
         TextArea.append(Daftar.get(index));
+        //System.out.println("Yang mau dikirim i" + Daftar.get(index));
+        Penerima.add(Daftar.get(index));
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void UsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UsernameActionPerformed
