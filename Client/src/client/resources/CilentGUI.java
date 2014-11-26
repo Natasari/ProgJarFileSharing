@@ -456,6 +456,13 @@ public class CilentGUI extends javax.swing.JFrame {
         TextArea.append(Daftar.get(index));
         //System.out.println("Yang mau dikirim i" + Daftar.get(index));
         Penerima.add(Daftar.get(index));
+        
+        Daftar.remove(index);
+        DropList.removeAllItems();
+
+        for(int i=0; i<this.Daftar.size(); i++){
+                DropList.addItem(Daftar.get(i));
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void UsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UsernameActionPerformed
@@ -528,7 +535,8 @@ public class CilentGUI extends javax.swing.JFrame {
                     fos.close();
                 }
                 
-                
+                textAreaFile.setText("");
+                p.setFileYangDiunduh(null);
                 
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(CilentGUI.class.getName()).log(Level.SEVERE, null, ex);
