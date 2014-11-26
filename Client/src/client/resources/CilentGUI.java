@@ -6,6 +6,7 @@
 package client.resources;
 
 import Person.Person;
+import client.TListenServer;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -42,15 +43,20 @@ public class CilentGUI extends javax.swing.JFrame {
     private Socket socket;
     Person p = new Person();
     public ArrayList <String> Daftar ;
+    public ArrayList <String> DaftarFile ;
+    public ArrayList <String> DaftarDownload = new ArrayList<String>();
     FileOutputStream fos = null;
     FileInputStream fis = null;
     public String NamaFile;
     byte [] mybytearray ;
+    TListenServer ThreadS;
     /**
      * Creates new form CilentGUI
      */
     public CilentGUI() {
         initComponents();
+        DropList.removeAllItems();
+        DropListFile.removeAllItems();
     }
 
     /**
@@ -67,7 +73,6 @@ public class CilentGUI extends javax.swing.JFrame {
         textarea = new javax.swing.JTextArea();
         Browse = new javax.swing.JButton();
         Upload = new javax.swing.JButton();
-        Preview = new javax.swing.JLabel();
         filePath = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         ButConnect = new javax.swing.JButton();
@@ -75,6 +80,18 @@ public class CilentGUI extends javax.swing.JFrame {
         ButList = new javax.swing.JButton();
         DropList = new javax.swing.JComboBox();
         LabCOnnected = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        TextDaftarPenerima = new javax.swing.JScrollPane();
+        TextArea = new javax.swing.JTextArea();
+        Username = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        CheckFile = new javax.swing.JButton();
+        DropListFile = new javax.swing.JComboBox();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        textAreaFile = new javax.swing.JTextArea();
+        Download = new javax.swing.JButton();
+        AddFile = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -96,12 +113,10 @@ public class CilentGUI extends javax.swing.JFrame {
             }
         });
 
-        Preview.setText("Preview");
-
         filePath.setText("File Path");
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel1.setText("Send");
+        jLabel1.setText("Send Your File");
         jLabel1.setIconTextGap(3);
 
         ButConnect.setText("Connect");
@@ -128,6 +143,61 @@ public class CilentGUI extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("Add");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        TextArea.setColumns(20);
+        TextArea.setRows(5);
+        TextDaftarPenerima.setViewportView(TextArea);
+
+        Username.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UsernameActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Username :");
+
+        CheckFile.setText("Check File");
+        CheckFile.setActionCommand("");
+        CheckFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CheckFileActionPerformed(evt);
+            }
+        });
+
+        DropListFile.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        DropListFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DropListFileActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel3.setText("Check Your Directory");
+
+        textAreaFile.setColumns(20);
+        textAreaFile.setRows(5);
+        jScrollPane2.setViewportView(textAreaFile);
+
+        Download.setText("Download");
+        Download.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DownloadActionPerformed(evt);
+            }
+        });
+
+        AddFile.setText("Add File");
+        AddFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddFileActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -135,30 +205,58 @@ public class CilentGUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane1)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(Browse, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(filePath, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)))
-                        .addGap(24, 24, 24))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(ButConnect)
-                                .addGap(18, 18, 18)
-                                .addComponent(LabCOnnected, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(Preview)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Username))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(ButList, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(LabList)
-                                .addGap(26, 26, 26)
-                                .addComponent(DropList, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(Upload))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addGap(12, 12, 12)
+                                .addComponent(ButList, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(ButConnect))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(64, 64, 64)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(TextDaftarPenerima)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(DropList, 0, 118, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(Upload))
+                            .addComponent(jScrollPane1))
+                        .addGap(18, 18, 18))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(CheckFile)
+                            .addComponent(jLabel3)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(Browse, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(filePath, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Download, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(LabCOnnected, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(DropListFile, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(AddFile))
+                            .addComponent(jScrollPane2))
+                        .addContainerGap())))
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {Browse, ButList});
@@ -166,28 +264,47 @@ public class CilentGUI extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(32, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(ButConnect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(LabCOnnected, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addContainerGap()
+                .addComponent(LabCOnnected, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(Username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ButConnect)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ButList)
-                    .addComponent(DropList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(LabList))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(DropList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(TextDaftarPenerima, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addGap(4, 4, 4)
+                .addGap(8, 8, 8)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Browse)
                     .addComponent(filePath))
-                .addGap(18, 18, 18)
-                .addComponent(Preview)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Upload)
-                .addGap(48, 48, 48))
+                .addGap(15, 15, 15)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(CheckFile)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(DropListFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(AddFile))
+                .addGap(20, 20, 20)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Download)
+                .addContainerGap())
         );
 
         pack();
@@ -244,32 +361,47 @@ public class CilentGUI extends javax.swing.JFrame {
 
     private void ButConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButConnectActionPerformed
         try {
-            socket = new Socket("localhost", 6060);
-            bos = new BufferedOutputStream(socket.getOutputStream());
-            dis = new DataInputStream(socket.getInputStream());
-            br = new BufferedReader(new InputStreamReader(dis));
-            
-            ous = new ObjectOutputStream(socket.getOutputStream());
-            ois = new ObjectInputStream(socket.getInputStream());
-            int success =0;
-            ous.writeUTF("CON");
-            ous.flush();
-            ous.reset();
-            String pesan = ois.readUTF();
-            if ((pesan) != null) {
-                if(pesan.equals("SUCCESS")){
-                    success = 1;
+            if(ButConnect.getText().toString().equals("Connect")){
+                socket = new Socket("localhost", 6060);
+                bos = new BufferedOutputStream(socket.getOutputStream());
+                dis = new DataInputStream(socket.getInputStream());
+                br = new BufferedReader(new InputStreamReader(dis));
+
+                ous = new ObjectOutputStream(socket.getOutputStream());
+                ois = new ObjectInputStream(socket.getInputStream());
+                int success =0;
+                ous.writeUTF("CON");
+                ous.flush();
+                ous.reset();
+                System.out.println(Username.getText());
+                ous.writeUTF(Username.getText());
+                ous.flush();
+                ous.reset();
+
+                String pesan = ois.readUTF();
+                if ((pesan) != null) {
+                    if(pesan.equals("SUCCESS")){
+                        success = 1;
+                    }
                 }
+
+                if(success == 1){
+                    LabCOnnected.setText(Username.getText() + " You are Connected");
+                }
+                ButConnect.setText("Disconnect");
             }
-            try {
-                p = (Person) ois.readObject();
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(CilentGUI.class.getName()).log(Level.SEVERE, null, ex);
+            else if(ButConnect.getText().toString().equals("Disconnect")){
+                ous.writeUTF("QUIT");
+                ous.flush();
+                ous.reset();
+                ButConnect.setText("Connect");
+                LabCOnnected.setText(Username.getText() + " You are not Connected");
+                socket.close();
             }
-            if(success == 1){
-                LabCOnnected.setText(p.getNama() + " you are connected");
-            }
-           
+            
+            //ThreadS = new TListenServer(socket);
+            //Thread t = new Thread(ThreadS);
+            //t.start();
             //socket.close();
         } catch (IOException ex) {
             Logger.getLogger(CilentGUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -281,23 +413,19 @@ public class CilentGUI extends javax.swing.JFrame {
     private void ButListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButListActionPerformed
          try {
              try {
-                 
-                 
                  ous.writeUTF("LIST");
                  ous.flush();
                  ous.reset();
-                 
                  p = (Person) ois.readObject();
                  this.Daftar = p.getDaftar();
                  
                   String tampil = "";
                   DropList.removeAllItems();
                   for(int i=0; i<this.Daftar.size(); i++){
-                      tampil = tampil + Daftar.get(i);
                       DropList.addItem(Daftar.get(i));
                       System.out.println(Daftar.get(i));
                   }
-                  //ListConnected.setText(tampil);
+                  
                   
              } catch (ClassNotFoundException ex) {
                  Logger.getLogger(CilentGUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -316,6 +444,75 @@ public class CilentGUI extends javax.swing.JFrame {
     private void DropListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DropListActionPerformed
             
     }//GEN-LAST:event_DropListActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        int index = DropList.getSelectedIndex();
+        TextArea.append(Daftar.get(index));
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void UsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UsernameActionPerformed
+
+    }//GEN-LAST:event_UsernameActionPerformed
+
+    private void CheckFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckFileActionPerformed
+        try {
+            try {
+            ous.writeUTF("CHEK");
+            ous.flush();
+            ous.reset();
+            
+            p = (Person) ois.readObject();
+            this.DaftarFile = p.getDaftarFile();
+            
+            
+            DropList.removeAllItems();
+            for(int i=0; i<this.DaftarFile.size(); i++){
+                DropListFile.addItem(DaftarFile.get(i));
+                System.out.println(DaftarFile.get(i));
+            }    
+                
+                
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(CilentGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }            
+        } catch (IOException ex) {
+            Logger.getLogger(CilentGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_CheckFileActionPerformed
+
+    private void AddFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddFileActionPerformed
+        int index = DropListFile.getSelectedIndex();
+        textAreaFile.append(DaftarFile.get(index) + "\r\n");
+        String a= DaftarFile.get(index);
+//        System.out.println(a+" added");
+        DaftarDownload.add(a);
+        
+        
+        DaftarFile.remove(index);
+        DropListFile.removeAllItems();
+
+        for(int i=0; i<this.DaftarFile.size(); i++){
+                DropListFile.addItem(DaftarFile.get(i));
+        }
+    }//GEN-LAST:event_AddFileActionPerformed
+
+    private void DownloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DownloadActionPerformed
+        try {
+            ous.writeUTF("DOWN");
+            ous.flush();
+            ous.reset();
+            p.setFileYangDiunduh(DaftarDownload);
+            ous.writeObject(p);
+            ous.flush();
+            ous.reset();
+        } catch (IOException ex) {
+            Logger.getLogger(CilentGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_DownloadActionPerformed
+
+    private void DropListFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DropListFileActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_DropListFileActionPerformed
 
     /**
      * @param args the command line arguments
@@ -353,24 +550,47 @@ public class CilentGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton AddFile;
     private javax.swing.JButton Browse;
     private javax.swing.JButton ButConnect;
     private javax.swing.JButton ButList;
+    private javax.swing.JButton CheckFile;
+    private javax.swing.JButton Download;
     private javax.swing.JComboBox DropList;
+    private javax.swing.JComboBox DropListFile;
     private javax.swing.JLabel LabCOnnected;
     private javax.swing.JLabel LabList;
-    private javax.swing.JLabel Preview;
+    private javax.swing.JTextArea TextArea;
+    private javax.swing.JScrollPane TextDaftarPenerima;
     private javax.swing.JButton Upload;
+    private javax.swing.JTextField Username;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JLabel filePath;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextArea textAreaFile;
     private javax.swing.JTextArea textarea;
     // End of variables declaration//GEN-END:variables
     private File file; 
     private FileFilter CustomFilter() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    /**
+     * @return the DaftarDownload
+     */
+    public ArrayList <String> getDaftarDownload() {
+        return DaftarDownload;
+    }
+
+    /**
+     * @param DaftarDownload the DaftarDownload to set
+     */
+    
 }
 
 
