@@ -505,6 +505,25 @@ public class CilentGUI extends javax.swing.JFrame {
             ous.writeObject(p);
             ous.flush();
             ous.reset();
+            try {
+                p = (Person) ois.readObject();
+                for(int i=0; i<p.getFileYangDiunduh().size();i++){
+                    System.out.println(p.getFileYangDiunduh().get(i));
+                    System.out.println(p.getMybytearrayServer().length);
+                    byte [] bytesDownload = new byte[p.getMybytearrayServer().length];
+                    fos = new FileOutputStream("e:/" + p.getFileYangDiunduh().get(i));
+                    bos = new BufferedOutputStream(fos);
+                    bos.write(p.getMybytearrayServer(),0,p.getMybytearrayServer().length);
+                    bos.flush();
+                    bos.close();
+                    fos.close();
+                }
+                
+                
+                
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(CilentGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } catch (IOException ex) {
             Logger.getLogger(CilentGUI.class.getName()).log(Level.SEVERE, null, ex);
         }

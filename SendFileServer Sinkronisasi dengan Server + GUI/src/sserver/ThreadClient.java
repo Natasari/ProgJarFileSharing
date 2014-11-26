@@ -319,9 +319,11 @@ public class ThreadClient implements Runnable {
             for(int i=0; i<listDownload.size(); i++){
                 File myFile = new File (FileToSend + this.getUsername()+ "/" + listDownload.get(i));
                 byte[] mybyte  = new byte [(int)myFile.length()];
-                //fis = new FileInputStream(myFile);
-                //bi = new BufferedInputStream(fis);
-                //bi.read(mybyte,0,mybyte.length);
+                fis = new FileInputStream(myFile);
+                bi = new BufferedInputStream(fis);
+                bi.read(mybyte,0,mybyte.length);
+                p.setMybytearrayServer(mybyte);
+                ous.writeObject(p);
                 System.out.println(FileToSend + this.getUsername()+ "/" + listDownload.get(i));
                 System.out.println(myFile.length());
             }
