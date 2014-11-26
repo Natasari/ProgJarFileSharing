@@ -57,6 +57,7 @@ public class ThreadClient implements Runnable {
     private File file = null;
     private String FileToSend="d:/";
     private BufferedInputStream bi = null;
+    private String directoryName;
     
     public ThreadClient(Socket sockClient, ArrayList<ThreadClient> t, ArrayList<Socket> s){
         this.sockClient=sockClient;
@@ -325,14 +326,25 @@ public class ThreadClient implements Runnable {
             for(int i=0; i<listDownload.size(); i++){
                 File myFile = new File (FileToSend + this.getUsername()+ "/" + listDownload.get(i));
                 byte[] mybyte  = new byte [(int)myFile.length()];
+                p.setMybytearrayServer(mybyte);
                 fis = new FileInputStream(myFile);
                 bi = new BufferedInputStream(fis);
                 bi.read(mybyte,0,mybyte.length);
-                p.setMybytearrayServer(mybyte);
+                
                 ous.writeObject(p);
+                ous.flush();
+                ous.reset();
+                bi.close();
+                fis.close();
+                
                 System.out.println(FileToSend + this.getUsername()+ "/" + listDownload.get(i));
+                
                 System.out.println(myFile.length());
+                myFile.delete();
             }
+            //File f = new File("d:/udin/tambun.xlsx");
+            //System.out.println(f.length());
+            //f.delete();
             
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -379,6 +391,10 @@ public class ThreadClient implements Runnable {
      */
     public void setPenerima(ArrayList <String> Penerima) {
         this.Penerima = Penerima;
+    }
+
+    private void delete(File myFile) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
   

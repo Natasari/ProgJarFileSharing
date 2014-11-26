@@ -514,8 +514,9 @@ public class CilentGUI extends javax.swing.JFrame {
             ous.flush();
             ous.reset();
             try {
-                p = (Person) ois.readObject();
+                
                 for(int i=0; i<p.getFileYangDiunduh().size();i++){
+                    p = (Person) ois.readObject();
                     System.out.println(p.getFileYangDiunduh().get(i));
                     System.out.println(p.getMybytearrayServer().length);
                     byte [] bytesDownload = new byte[p.getMybytearrayServer().length];
