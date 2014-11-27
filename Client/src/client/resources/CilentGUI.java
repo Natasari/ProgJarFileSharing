@@ -481,7 +481,7 @@ public class CilentGUI extends javax.swing.JFrame {
             this.DaftarFile = p.getDaftarFile();
             
             
-            DropList.removeAllItems();
+            DropListFile.removeAllItems();
             for(int i=0; i<this.DaftarFile.size(); i++){
                 DropListFile.addItem(DaftarFile.get(i));
                 System.out.println(DaftarFile.get(i));

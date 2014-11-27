@@ -267,7 +267,8 @@ public class ThreadClient implements Runnable {
     }
 
     private void listFile() throws IOException {
-        
+        listFile.clear();
+        p.setDaftarFile(null);
         File folder = new File("d:/" + this.getUsername());
         File[] listOfFiles = folder.listFiles();
         ThreadClient tc = null;
@@ -275,15 +276,13 @@ public class ThreadClient implements Runnable {
           if (listOfFiles[i].isFile()) {
             System.out.println("File " + listOfFiles[i].getName());
             listFile.add(listOfFiles[i].getName());
-          } //else if (listOfFiles[i].isDirectory()) {
-            //System.out.println("Directory " + listOfFiles[i].getName());
-          //}
+          } 
         }
         p.setDaftarFile(listFile);
         ous.writeObject(p);
         ous.flush();
         ous.reset();
-        list.clear();
+        
     }
 
     /**
