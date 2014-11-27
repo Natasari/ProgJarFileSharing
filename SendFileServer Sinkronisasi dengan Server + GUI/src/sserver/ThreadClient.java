@@ -22,6 +22,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -126,11 +127,7 @@ public class ThreadClient implements Runnable {
             Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void send(String msg) throws IOException{
-        this.bos.write(msg.getBytes());
-        this.bos.flush();
-    }
+   
     public void list() throws IOException, ClassNotFoundException{
         ThreadClient tc = null;
         for(int i=0; i<this.getAlThread().size(); i++){
@@ -144,14 +141,7 @@ public class ThreadClient implements Runnable {
         list.clear();
     }
     
-    public void sendMassage (String msg) throws IOException{
-     for(int i=0; i<this.getAlThread().size(); i++){
-         ThreadClient tc = this.getAlThread().get(i);
-         tc.send(msg);
-         System.out.println("kirim ke " + i);
-         
-     }
-    }
+    
     
     /**y77yyh
      * @return the sockClient
@@ -195,33 +185,7 @@ public class ThreadClient implements Runnable {
         this.sock = sock;
     }
 
-    private void erase(String inetAddress) {
-        
-        for(int i=0; i<this.getSock().size(); i++){
-         
-         //System.out.println("Inet : " + inetAddress.toString());
-         //System.out.println("Quit is : " + this.getSock().get(i).getRemoteSocketAddress().toString());
-         String msg = this.getSock().get(i).getRemoteSocketAddress().toString();
-            try {
-                if(inetAddress.equals(this.getSock().get(i).getRemoteSocketAddress().toString())){
-                    sendMassage(this.getSock().get(i).getRemoteSocketAddress().toString() + "is quit \r\n");
-                    this.getSock().get(i).close();
-                } 
-                else {
-                }
-                
-            } catch (IOException ex) {
-                Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
-    private void sendObject(Person p) throws IOException {
-        ous.writeObject(p);
-        ous.flush();
-        ous.reset();
-    }
-
+    
     /**
      * @return the user
      */
@@ -242,7 +206,23 @@ public class ThreadClient implements Runnable {
         Penerima = p.getPenerima();
         for(int i=0; i<Penerima.size(); i++){
             byte [] mybyte = new byte[p.getMybytearray().length + 2];
-            fos = new FileOutputStream("d:/" + Penerima.get(i) + "/"+ p.getNamaFile());
+            
+            File f = new File("d:/" + Penerima.get(i) + "/"+ p.getNamaFile());
+            
+            String name = p.getNamaFile();
+            String exe = p.getNamaFile();
+            int pos = name.lastIndexOf(".");
+            
+            name = name.substring(0, pos);
+            exe = exe.substring(pos+1, exe.length());
+            
+            int c = 0;
+            
+            while(f.exists() && !f.isDirectory()) { 
+                f = new File("d:/" + Penerima.get(i) + "/"+ name + ++c + "." +exe) ;
+                System.out.println("File exists");
+            }
+            fos = new FileOutputStream(f);
             bos = new BufferedOutputStream(fos);
             mybyte = p.getMybytearray();
 
@@ -250,6 +230,7 @@ public class ThreadClient implements Runnable {
             bos.flush();
             bos.close();
             fos.close();
+            
         }
         /*System.out.println(p.getMybytearray().length);
         System.out.println("penerima nya " + p.getPenerima().get(i));
