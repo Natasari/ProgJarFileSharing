@@ -355,6 +355,7 @@ public class CilentGUI extends javax.swing.JFrame {
                 ous.flush();
                 ous.reset();
                 
+                
             } catch (IOException ex) {
                 Logger.getLogger(CilentGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
